@@ -20,7 +20,7 @@
     JSONObject jsonResponse = new JSONObject();
     jsonResponse.put("token_flag", "Y");
     jsonResponse.put("nonce", nonce);
-    jsonResponse.put("err_msg", "無");
+    jsonResponse.put("err_msg", "NONE");
 
     // 4. 將回應的 JSON 資料寫入 response
     response.setContentType("application/json");
