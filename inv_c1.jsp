@@ -47,7 +47,7 @@ if (responseCode == HttpURLConnection.HTTP_OK) {
     }
     JSONObject jsonResponse = new JSONObject(responseStrBuilder.toString());
     String rNonce = jsonResponse.optString("nonce", "");
-    out.println(rNonce + :1_2: + nonce);
+    out.println(rNonce + ":1_2:" + nonce);
     if (!rNonce.equals(nonce)) {
         out.print("{\"err_msg\":\"Nonce mismatch\"}");
         return;
