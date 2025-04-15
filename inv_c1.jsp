@@ -14,9 +14,6 @@ String ban = request.getParameter("ban");
 // 2. 產生隨機的 16 位英數字 nonce
 String nonce = generateNonce(16);
 
-// 2.1 將 nonce 存入 session STEP3時要確認nonce是否相同
-session.setAttribute("nonce", nonce);
-
 // 3. 建立 JSON 物件
 JSONObject jsonRequest = new JSONObject();
 jsonRequest.put("token", token); // 回傳原本的 token
@@ -49,6 +46,11 @@ if (responseCode == HttpURLConnection.HTTP_OK) {
         responseStrBuilder.append((char) ch);
     }
     JSONObject jsonResponse = new JSONObject(responseStrBuilder.toString());
+    String rNonce = jsonResponse.optString("nonce", "");
+    if (!rNonce.equals(nonce)) {
+        out.print("{\"err_msg\":\"Nonce mismatch\"}");
+        return;
+    }
 
     // 6. 將回傳的 JSON 資料寫入 response
     out.print(jsonResponse.toString());
