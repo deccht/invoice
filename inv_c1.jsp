@@ -24,7 +24,11 @@ response.setContentType("application/json");
 response.setCharacterEncoding("UTF-8");
 
 // 5. 將 JSON 資料 POST 到指定的 API 網址，並接收回傳的 JSON 資料
+//歸戶測試環境
 //String apiUrl = "https://wwwtest-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierJsonPost";
+//歸戶正式環境
+//String apiUrl = "https://www-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierJsonPost";
+//自我測試環境
 String apiUrl = "https://boss71.cht.com.tw/AMPS/carrie/inv_r1.jsp";
 URL url = new URL(apiUrl);
 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
