@@ -38,7 +38,7 @@
     g.setStroke(new BasicStroke(3)); // 設定線條寬度為 3
     // 控制干擾線的長度
     int maxLineLength = 50; // 最大干擾線長度
-    for(i=0;i<=3;i++) {
+    for(int i=0;i<3;i++) {
         int x1 = random.nextInt(width);
         int y1 = random.nextInt(height);
         int x2 = x1 + random.nextInt(maxLineLength);
