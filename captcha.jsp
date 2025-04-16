@@ -2,6 +2,8 @@
 <%@ page import="java.awt.image.*" %>
 <%@ page import="javax.imageio.ImageIO" %>
 <%@ page import="java.util.Random" %>
+<%@ page import="java.io.OutputStream" %>
+
 <%
     // 生成驗證碼
     int width = 120;
@@ -45,7 +47,7 @@
 
     // 將圖片輸出到 response
     response.setContentType("image/png");
-    OutputStream out = response.getOutputStream();
-    ImageIO.write(image, "png", out);
-    out.close();
+    OutputStream outputStream = response.getOutputStream(); // 修改變數名稱
+    ImageIO.write(image, "png", outputStream);
+    outputStream.close();
 %>
