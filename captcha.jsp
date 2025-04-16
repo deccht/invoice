@@ -9,7 +9,7 @@
     int width = 120;
     int height = 40;
     int codeLength = 5;
-    String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // 只包含大寫英文和數字
     Random random = new Random();
     StringBuilder captchaCode = new StringBuilder();
 
@@ -22,7 +22,7 @@
 
     // 創建圖片
     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-    Graphics g = image.getGraphics();
+    Graphics2D g = image.createGraphics();
     g.setColor(Color.WHITE);
     g.fillRect(0, 0, width, height);
 
@@ -33,21 +33,20 @@
         g.drawString(String.valueOf(captchaCode.charAt(i)), 20 * i + 10, 30);
     }
 
-    // 畫干擾線
+    // 畫干擾線（加粗）
     g.setColor(Color.GRAY);
-    for (int i = 0; i < 10; i++) {
-        int x1 = random.nextInt(width);
-        int y1 = random.nextInt(height);
-        int x2 = random.nextInt(width);
-        int y2 = random.nextInt(height);
-        g.drawLine(x1, y1, x2, y2);
-    }
+    g.setStroke(new BasicStroke(3)); // 設定線條寬度為 3
+    int x1 = random.nextInt(width);
+    int y1 = random.nextInt(height);
+    int x2 = random.nextInt(width);
+    int y2 = random.nextInt(height);
+    g.drawLine(x1, y1, x2, y2);
 
     g.dispose();
 
     // 將圖片輸出到 response
     response.setContentType("image/png");
-    OutputStream outputStream = response.getOutputStream(); // 修改變數名稱
+    OutputStream outputStream = response.getOutputStream();
     ImageIO.write(image, "png", outputStream);
     outputStream.close();
 %>
