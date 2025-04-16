@@ -37,17 +37,18 @@
     g.setColor(Color.GRAY);
     g.setStroke(new BasicStroke(3)); // 設定線條寬度為 3
     // 控制干擾線的長度
-int maxLineLength = 50; // 最大干擾線長度
-int x1 = random.nextInt(width);
-int y1 = random.nextInt(height);
-int x2 = x1 + random.nextInt(maxLineLength) - maxLineLength / 2; // 限制 x2 的範圍
-int y2 = y1 + random.nextInt(maxLineLength) - maxLineLength / 2; // 限制 y2 的範圍
+    int maxLineLength = 50; // 最大干擾線長度
+    for(i=0;i<=3;i++) {
+        int x1 = random.nextInt(width);
+        int y1 = random.nextInt(height);
+        int x2 = x1 + random.nextInt(maxLineLength);
+        int y2 = y1 + random.nextInt(maxLineLength);
 
-// 確保 x2 和 y2 不超出圖片邊界
-x2 = Math.max(0, Math.min(width, x2));
-y2 = Math.max(0, Math.min(height, y2));
-
-g.drawLine(x1, y1, x2, y2);
+        // 確保 x2 和 y2 不超出圖片邊界
+        x2 = Math.max(0, Math.min(width, x2));
+        y2 = Math.max(0, Math.min(height, y2));
+        g.drawLine(x1, y1, x2, y2);
+    }
 
     g.dispose();
 
