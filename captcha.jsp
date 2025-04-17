@@ -27,7 +27,7 @@
     g.fillRect(0, 0, width, height);
 
     // 畫驗證碼文字
-    g.setFont(new Font("Consolas", Font.BOLD, 24)); // 使用 Consolas 字體
+    g.setFont(new Font("Courier New", Font.BOLD, 24)); // 使用 Courier New 字體
     g.setColor(Color.BLACK);
     FontMetrics fm = g.getFontMetrics();
     int x = 10; // 起始 X 座標
@@ -39,10 +39,10 @@
 
     // 畫干擾線（加粗）
     g.setColor(Color.GRAY);
-    g.setStroke(new BasicStroke(2)); // 設定線條寬度為 3
+    g.setStroke(new BasicStroke(1)); // 設定線條寬度為 2
     // 控制干擾線的長度
     int maxLineLength = 50; // 最大干擾線長度
-    for(int i=0; i<6; i++) {
+    for(int i=0; i<5; i++) {
         int x1 = random.nextInt(width);
         int y1 = random.nextInt(height);
         int x2 = x1 + random.nextInt(maxLineLength);
