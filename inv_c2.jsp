@@ -109,7 +109,7 @@
                     <input type="text" id="id" name="id" class="medium" pattern="[A-Za-z0-9]{10}" required>
                 </div>
                 <div class="captcha">
-                    <label for="captcha">驗證碼</label>
+                    <label for="captcha">驗證碼 (5位英數字)</label>
                     <input type="text" id="captcha" name="captcha" class="short" pattern="[A-Za-z0-9]{5}" required>
                     <img id="captchaImage" src="captcha.jsp" alt="驗證碼" onclick="reloadCaptcha()">
                 </div>
