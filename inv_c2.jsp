@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>驗證碼輸入頁面</title>
+        <title>變動載具號碼輸入頁面</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
