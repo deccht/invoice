@@ -64,6 +64,26 @@
         button:hover {
             background-color: #45a049;
         }
+
+        input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    /* 根據輸入長度調整寬度 */
+    input.short {
+        width: 80px; /* 適合 5 位數字 */
+    }
+
+    input.medium {
+        width: 150px; /* 適合 10 位數字 */
+    }
+
+    input.long {
+        width: 200px; /* 適合 13 位數字 */
+    }
     </style>
     <script>
         function reloadCaptcha() {
@@ -77,23 +97,23 @@
         <form action="validateCaptcha.jsp" method="post">
             <div class="form-group">
                 <label for="year">年期別 (5位數字)</label>
-                <input type="text" id="year" name="year" pattern="\\d{5}" required>
+                <input type="text" id="year" name="year" class="short" pattern="\d{5}" required>
             </div>
             <div class="form-group">
                 <label for="serial">流水號 (10位數字)</label>
-                <input type="text" id="serial" name="serial" pattern="\\d{10}" required>
+                <input type="text" id="serial" name="serial" class="medium" pattern="\d{10}" required>
             </div>
             <div class="form-group">
                 <label for="checkCode">檢核碼 (13位數字)</label>
-                <input type="text" id="checkCode" name="checkCode" pattern="\\d{13}" required>
+                <input type="text" id="checkCode" name="checkCode" class="long" pattern="\d{13}" required>
             </div>
             <div class="form-group">
                 <label for="id">身份字號或統一編號 (10位英數字)</label>
-                <input type="text" id="id" name="id" pattern="[A-Za-z0-9]{10}" required>
+                <input type="text" id="id" name="id" class="medium" pattern="[A-Za-z0-9]{10}" required>
             </div>
             <div class="captcha">
                 <label for="captcha">驗證碼</label>
-                <input type="text" id="captcha" name="captcha" pattern="[A-Za-z0-9]{5}" required>
+                <input type="text" id="captcha" name="captcha" class="short" pattern="[A-Za-z0-9]{5}" required>
                 <img id="captchaImage" src="captcha.jsp" alt="驗證碼" onclick="reloadCaptcha()">
             </div>
             <button type="submit">提交</button>
