@@ -34,8 +34,6 @@
             }
 
             .captcha {
-                display: flex;
-                align-items: center;
                 margin-bottom: 15px;
             }
 
