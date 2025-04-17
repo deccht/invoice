@@ -29,8 +29,12 @@
     // 畫驗證碼文字
     g.setFont(new Font("Arial", Font.BOLD, 24));
     g.setColor(Color.BLACK);
+    FontMetrics fm = g.getFontMetrics();
+    int x = 10; // 起始 X 座標
     for (int i = 0; i < codeLength; i++) {
-        g.drawString(String.valueOf(captchaCode.charAt(i)), 20 * i + 10, 30);
+        String charStr = String.valueOf(captchaCode.charAt(i));
+        g.drawString(charStr, x, 30);
+        x += fm.stringWidth(charStr) + 5; // 動態計算下一個字元的 X 座標，增加 5 像素間距
     }
 
     // 畫干擾線（加粗）
@@ -38,7 +42,7 @@
     g.setStroke(new BasicStroke(3)); // 設定線條寬度為 3
     // 控制干擾線的長度
     int maxLineLength = 50; // 最大干擾線長度
-    for(int i=0;i<3;i++) {
+    for(int i=0; i<6; i++) {
         int x1 = random.nextInt(width);
         int y1 = random.nextInt(height);
         int x2 = x1 + random.nextInt(maxLineLength);
