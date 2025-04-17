@@ -6,7 +6,7 @@
 
 <%
     // 生成驗證碼
-    int width = 120;
+    int width = 150;
     int height = 40;
     int codeLength = 5;
     String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // 只包含大寫英文和數字
@@ -27,7 +27,7 @@
     g.fillRect(0, 0, width, height);
 
     // 畫驗證碼文字
-    g.setFont(new Font("Arial", Font.BOLD, 24));
+    g.setFont(new Font("Consolas", Font.BOLD, 24)); // 使用 Consolas 字體
     g.setColor(Color.BLACK);
     FontMetrics fm = g.getFontMetrics();
     int x = 10; // 起始 X 座標
@@ -39,7 +39,7 @@
 
     // 畫干擾線（加粗）
     g.setColor(Color.GRAY);
-    g.setStroke(new BasicStroke(3)); // 設定線條寬度為 3
+    g.setStroke(new BasicStroke(2)); // 設定線條寬度為 3
     // 控制干擾線的長度
     int maxLineLength = 50; // 最大干擾線長度
     for(int i=0; i<6; i++) {
