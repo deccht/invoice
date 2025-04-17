@@ -93,7 +93,7 @@
             </div>
             <div class="captcha">
                 <label for="captcha">驗證碼</label>
-                <input type="text" id="captcha" name="captcha" required>
+                <input type="text" id="captcha" name="captcha" pattern="[A-Za-z0-9]{5}" required>
                 <img id="captchaImage" src="captcha.jsp" alt="驗證碼" onclick="reloadCaptcha()">
             </div>
             <button type="submit">提交</button>
