@@ -88,7 +88,7 @@
 
     <body>
         <div class="container">
-            <h1>驗證碼輸入頁面</h1>
+            <h1>變動載具號碼輸入頁面</h1>
             <form action="validateCaptcha.jsp" method="post">
                 <div class="form-group">
                     <label for="year">年期別 (5位數字)</label>
