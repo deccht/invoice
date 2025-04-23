@@ -64,7 +64,6 @@
 
                 token = "d1f2d1f5sfd1sf12sfs1s1f5s"; //TEST
                 
-                String idno = (String) session.getAttribute("idno"); // 必填，會員認証之後所回傳的統編
                 String cardBan = "96979933"; // 必填，會員載具申請之統一編號
                 String cardNo1 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // 必填，載具明碼 (Base64 編碼)
                 String cardNo2 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // 必填，載具隱碼 (Base64 編碼)
