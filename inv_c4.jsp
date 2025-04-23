@@ -11,13 +11,15 @@
     <%
         // Step 4: 傳送參數到大平台
         String token = (String) session.getAttribute("token"); // 必填，從 session 中取得
-        String cardBan = "97162640"; // 必填，會員載具申請之統一編號
-        String cardNo1 = Base64.getEncoder().encodeToString("1234".getBytes("UTF-8")); // 必填，載具明碼 (Base64 編碼)
-        String cardNo2 = Base64.getEncoder().encodeToString("987654321".getBytes("UTF-8")); // 必填，載具隱碼 (Base64 編碼)
-        String cardType = Base64.getEncoder().encodeToString("BG0001".getBytes("UTF-8")); // 必填，載具類別編號 (Base64 編碼)
+        String idno = (String) session.getAttribute("idno"); // 必填，會員認証之後所回傳的統編
+        String cardBan = "96979933"; // 必填，會員載具申請之統一編號
+        String cardNo1 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // 必填，載具明碼 (Base64 編碼)
+        String cardNo2 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // 必填，載具隱碼 (Base64 編碼)
+        String cardType = Base64.getEncoder().encodeToString("EJ0030".getBytes("UTF-8")); // 必填，載具類別編號 (Base64 編碼)
 
-        // APIKEY (大平台提供)
-        String apiKey = "XQcpGwtz5esvvdqTTsQ0bA==";
+        // APIKEY (大平台提供) EJ0030
+        //String apiKey = "Xh8gAEbiBm2Sym3hCDFl3g==";
+        String apiKey = "Xh8gAEbiBm2Sym3hCDXXXXXX"; // TEST
 
         // 構建參數
         Map<String, String> params = new TreeMap<>(); // 使用 TreeMap 自動按鍵名排序
