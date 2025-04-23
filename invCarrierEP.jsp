@@ -7,31 +7,31 @@
 <%@ page contentType="application/json; charset=UTF-8" %>
 
 <%
-// 1. æŽ¥æ”¶å¤§å¹³å°å‚³ä¾†çš„åƒæ•¸ 
+// 1. ±µ¦¬¤j¥­¥x¶Ç¨Óªº°Ñ¼Æ
 String token = request.getParameter("token");
 String ban = request.getParameter("ban");
 
-// 1.1 tokenå­˜åˆ°SESSION, ä¹‹å¾Œè¦å›žå‚³å¤§å¹³å°
+// 1.1 token¦s¨ìSESSION, ¤§«á­n¦^¶Ç¤j¥­¥x
 session.setAttribute("token", token);
 
-// 2. ç”¢ç”Ÿéš¨æ©Ÿçš„ 16 ä½è‹±æ•¸å­— nonce
+// 2. ²£¥ÍÀH¾÷ªº 16 ¦ì­^¼Æ¦r nonce
 String nonce = generateNonce(16);
 
-// 3. å»ºç«‹ JSON ç‰©ä»¶
+// 3. «Ø¥ß JSON ª«¥ó
 JSONObject jsonRequest = new JSONObject();
-jsonRequest.put("token", token); // å›žå‚³åŽŸæœ¬çš„ token
+jsonRequest.put("token", token); // ¦^¶Ç­ì¥»ªº token
 jsonRequest.put("nonce", nonce);
 
-// 4. è¨­å®š HTTP å…§å®¹é¡žåž‹ç‚º application/json
+// 4. ³]©w HTTP ¤º®eÃþ«¬¬° application/json
 response.setContentType("application/json");
 response.setCharacterEncoding("UTF-8");
 
-// 5. å°‡ JSON è³‡æ–™ POST åˆ°æŒ‡å®šçš„ API ç¶²å€ï¼Œä¸¦æŽ¥æ”¶å›žå‚³çš„ JSON è³‡æ–™
-//æ­¸æˆ¶æ¸¬è©¦ç’°å¢ƒ
+// 5. ±N JSON ¸ê®Æ POST ¨ì«ü©wªº API ºô§}¡A¨Ã±µ¦¬¦^¶Çªº JSON ¸ê®Æ
+//Âk¤á´ú¸ÕÀô¹Ò
 String apiUrl = "https://wwwtest-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierJsonPost";
-//æ­¸æˆ¶æ­£å¼ç’°å¢ƒ
+//Âk¤á¥¿¦¡Àô¹Ò
 //String apiUrl = "https://www-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierJsonPost";
-//è‡ªæˆ‘æ¸¬è©¦ç’°å¢ƒ
+//¦Û§Ú´ú¸ÕÀô¹Ò
 //String apiUrl = "https://boss71.cht.com.tw/AMPS/carrie/inv_r1.jsp";
 URL url = new URL(apiUrl);
 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -60,15 +60,15 @@ if (responseCode == HttpURLConnection.HTTP_OK) {
         return;
     }
 
-    // 6. å°‡ç¶²é å°Žå‘åˆ°æŒ‡å®šçš„ URL
-    String redirectUrl = "https://inv.cht.com.tw/invoice/invCarrierEP_c2_Var.jsp";
+    // 6. ±Nºô­¶¾É¦V¨ì«ü©wªº URL
+    String redirectUrl = "https://inv.cht.com.tw/invoice/chtmbr/carrie_mbr.jsp";
     response.sendRedirect(redirectUrl);
 } else {
     out.print("{\"err_msg\":\"Failed to connect to API\"}");
 }
 %>
 <%!
-// ç”¢ç”Ÿéš¨æ©Ÿè‹±æ•¸å­—å­—ä¸²
+// ²£¥ÍÀH¾÷­^¼Æ¦r¦r¦ê
 private String generateNonce(int length) {
     String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     Random rng = new Random();
