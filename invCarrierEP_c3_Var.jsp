@@ -61,9 +61,10 @@
                 // Step 4: 傳送參數到大平台
                 String idno = year + serial + checkCode;
                 String token = (String) session.getAttribute("token"); // 必填，從 session 中取得
-
-                token = "d1f2d1f5sfd1sf12sfs1s1f5s"; //TEST
-                
+                if ( idno == null || token == null) {
+                    out.println("<p>token OR idno 參數缺失，無法構建 POST 資料。</p>");
+                    return;
+                }
                 String cardBan = "96979933"; // 必填，會員載具申請之統一編號
                 String cardNo1 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // 必填，載具明碼 (Base64 編碼)
                 String cardNo2 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // 必填，載具隱碼 (Base64 編碼)
