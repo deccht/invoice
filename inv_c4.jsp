@@ -5,34 +5,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>æœƒå“¡è¼‰å…·æ­¸æˆ¶</title>
+    <title>·|­û¸ü¨ãÂk¤á</title>
 </head>
 <body>
     <%
-        // Step 4: å‚³é€åƒæ•¸åˆ°å¤§å¹³å°
-        String token = (String) session.getAttribute("token"); // å¿…å¡«ï¼Œå¾ session ä¸­å–å¾—
-        String idno = (String) session.getAttribute("idno"); // å¿…å¡«ï¼Œæœƒå“¡èªè¨¼ä¹‹å¾Œæ‰€å›å‚³çš„çµ±ç·¨
-        String cardBan = "96979933"; // å¿…å¡«ï¼Œæœƒå“¡è¼‰å…·ç”³è«‹ä¹‹çµ±ä¸€ç·¨è™Ÿ
-        String cardNo1 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // å¿…å¡«ï¼Œè¼‰å…·æ˜ç¢¼ (Base64 ç·¨ç¢¼)
-        String cardNo2 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // å¿…å¡«ï¼Œè¼‰å…·éš±ç¢¼ (Base64 ç·¨ç¢¼)
-        String cardType = Base64.getEncoder().encodeToString("EJ0030".getBytes("UTF-8")); // å¿…å¡«ï¼Œè¼‰å…·é¡åˆ¥ç·¨è™Ÿ (Base64 ç·¨ç¢¼)
+        // Step 4: ¶Ç°e°Ñ¼Æ¨ì¤j¥­¥x
+        String token = (String) session.getAttribute("token"); // ¥²¶ñ¡A±q session ¤¤¨ú±o
+        String idno = (String) session.getAttribute("idno"); // ¥²¶ñ¡A·|­û»{µı¤§«á©Ò¦^¶Çªº²Î½s
+        String cardBan = "96979933"; // ¥²¶ñ¡A·|­û¸ü¨ã¥Ó½Ğ¤§²Î¤@½s¸¹
+        String cardNo1 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // ¥²¶ñ¡A¸ü¨ã©ú½X (Base64 ½s½X)
+        String cardNo2 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // ¥²¶ñ¡A¸ü¨ãÁô½X (Base64 ½s½X)
+        String cardType = Base64.getEncoder().encodeToString("EJ0030".getBytes("UTF-8")); // ¥²¶ñ¡A¸ü¨ãÃş§O½s¸¹ (Base64 ½s½X)
 
-        // APIKEY (å¤§å¹³å°æä¾›) EJ0030
+        // APIKEY (¤j¥­¥x´£¨Ñ) EJ0030
         //String apiKey = "Xh8gAEbiBm2Sym3hCDFl3g==";
         String apiKey = "Xh8gAEbiBm2Sym3hCDXXXXXX"; // TEST
 
-        // æ§‹å»ºåƒæ•¸
-        Map<String, String> params = new TreeMap<>(); // ä½¿ç”¨ TreeMap è‡ªå‹•æŒ‰éµåæ’åº
+        // ºc«Ø°Ñ¼Æ
+        Map<String, String> params = new TreeMap<>(); // ¨Ï¥Î TreeMap ¦Û°Ê«öÁä¦W±Æ§Ç
         params.put("card_ban", cardBan);
         params.put("card_no1", cardNo1);
         params.put("card_no2", cardNo2);
         params.put("card_type", cardType);
         params.put("token", token);
 
-        // ç”Ÿæˆç°½å (signature)
+        // ¥Í¦¨Ã±¦W (signature)
         String signature = "";
         try {
-            // 1. æ‹¼æ¥åƒæ•¸å­—ä¸²
+            // 1. «÷±µ°Ñ¼Æ¦r¦ê
             StringBuilder dataToSign = new StringBuilder();
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 if (dataToSign.length() > 0) {
@@ -41,22 +41,22 @@
                 dataToSign.append(entry.getKey()).append("=").append(entry.getValue());
             }
 
-            // 2. ä½¿ç”¨ HMAC-SHA256 åŠ å¯†
+            // 2. ¨Ï¥Î HMAC-SHA256 ¥[±K
             Mac mac = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKeySpec = new SecretKeySpec(apiKey.getBytes("UTF-8"), "HmacSHA256");
             mac.init(secretKeySpec);
             byte[] hmacBytes = mac.doFinal(dataToSign.toString().getBytes("UTF-8"));
 
-            // 3. å°‡åŠ å¯†çµæœé€²è¡Œ Base64 ç·¨ç¢¼
+            // 3. ±N¥[±Kµ²ªG¶i¦æ Base64 ½s½X
             signature = Base64.getEncoder().encodeToString(hmacBytes);
         } catch (Exception e) {
-            out.println("<p>ç”Ÿæˆç°½åæ™‚ç™¼ç”ŸéŒ¯èª¤ï¼š" + e.getMessage() + "</p>");
+            out.println("<p>¥Í¦¨Ã±¦W®Éµo¥Í¿ù»~¡G" + e.getMessage() + "</p>");
         }
 
-        // å°‡ç°½ååŠ å…¥åƒæ•¸
+        // ±NÃ±¦W¥[¤J°Ñ¼Æ
         params.put("signature", signature);
 
-        // æ§‹å»º POST è³‡æ–™
+        // ºc«Ø POST ¸ê®Æ
         StringBuilder postData = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (postData.length() > 0) {
@@ -65,20 +65,20 @@
             postData.append(entry.getKey()).append("=").append(entry.getValue());
         }
 
-        // æ¨¡æ“¬å›å‚³çµ¦å¤§å¹³å°
-        // String postUrl = "https://www-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierFormPost"; // æ­£å¼ç’°å¢ƒ URL
-        String postUrl = "https://wwwtest-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierFormPost"; // æ¸¬è©¦ç’°å¢ƒ URL
+        // ¼ÒÀÀ¦^¶Çµ¹¤j¥­¥x
+        // String postUrl = "https://www-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierFormPost"; // ¥¿¦¡Àô¹Ò URL
+        String postUrl = "https://wwwtest-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierFormPost"; // ´ú¸ÕÀô¹Ò URL
         
     %>
 
-    <h1>æœƒå“¡è¼‰å…·æ­¸æˆ¶</h1>
-    <p>ä»¥ä¸‹æ˜¯å°‡å›å‚³çµ¦å¤§å¹³å°çš„åƒæ•¸ï¼š</p>
+    <h1>·|­û¸ü¨ãÂk¤á</h1>
+    <p>¥H¤U¬O±N¦^¶Çµ¹¤j¥­¥xªº°Ñ¼Æ¡G</p>
     <pre>
         <%= postData.toString() %>
     </pre>
-    <p>å›å‚³ URL: <%= postUrl %></p>
+    <p>¦^¶Ç URL: <%= postUrl %></p>
 
-    <!-- æ¨¡æ“¬è‡ªå‹•æäº¤è¡¨å–® -->
+    <!-- ¼ÒÀÀ¦Û°Ê´£¥æªí³æ -->
     <form id="carrierForm" action="<%= postUrl %>" method="post">
         <%
             for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -87,7 +87,7 @@
         <%
             }
         %>
-        <button type="submit">æäº¤</button>
+        <button type="submit">´£¥æ</button>
     </form>
 </body>
 </html>
