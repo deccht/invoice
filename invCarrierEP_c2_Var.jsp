@@ -81,7 +81,7 @@
         </style>
         <script>
             function reloadCaptcha() {
-                document.getElementById("captchaImage").src = "captcha.jsp?" + new Date().getTime();
+                document.getElementById("captchaImage").src = "captcha_Var.jsp?" + new Date().getTime();
             }
         </script>
     </head>
@@ -95,8 +95,8 @@
                     <input type="text" id="year" name="year" class="short" pattern="\d{5}" required>
                 </div>
                 <div class="form-group">
-                    <label for="serial">流水號 (10位數字)</label>
-                    <input type="text" id="serial" name="serial" class="medium" pattern="\d{10}" required>
+                    <label for="serial">流水號 (10位英數字)</label>
+                    <input type="text" id="serial" name="serial" class="medium" pattern="[A-Za-z0-9]{10}" required>
                 </div>
                 <div class="form-group">
                     <label for="checkCode">檢核碼 (13位數字)</label>
@@ -109,7 +109,7 @@
                 <div class="captcha">
                     <label for="captcha">驗證碼 (5位英數字)</label>
                     <input type="text" id="captcha" name="captcha" class="short" pattern="[A-Za-z0-9]{5}" required>
-                    <img id="captchaImage" src="captcha.jsp" alt="驗證碼" onclick="reloadCaptcha()">
+                    <img id="captchaImage" src="captcha_Var.jsp" alt="驗證碼" onclick="reloadCaptcha()">
                 </div>
                 <button type="submit">提交</button>
             </form>

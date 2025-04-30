@@ -51,13 +51,17 @@
 
             // 驗證格式的正則表達式
             boolean isYearValid = Pattern.matches("\\d{5}", year);
-            boolean isSerialValid = Pattern.matches("\\d{10}", serial);
+            boolean isSerialValid = Pattern.matches("[A-Za-z0-9]{10}", serial);
             boolean isCheckCodeValid = Pattern.matches("\\d{13}", checkCode);
             boolean isIdValid = Pattern.matches("[A-Za-z0-9]{10}", id);
             boolean isCaptchaValid = captchaSession != null && captchaSession.equalsIgnoreCase(captchaInput);
 
             // 驗證結果
             if (isYearValid && isSerialValid && isCheckCodeValid && isIdValid && isCaptchaValid) {
+                // 將 serial 和 id 轉成大寫
+                serial = serial.toUpperCase();
+                id = id.toUpperCase();
+
                 // Step 4: 傳送參數到大平台
                 String idno = year + serial + checkCode;
                 String token = (String) session.getAttribute("token"); // 必填，從 session 中取得
@@ -71,7 +75,9 @@
                 String cardType = Base64.getEncoder().encodeToString("EJ0185".getBytes("UTF-8")); // 必填，載具類別編號 (Base64 編碼)
         
                 // APIKEY (大平台提供) EJ0185
-                String apiKey = "3xIkuMC2jK8g0pHMZlNwGg==";
+                //String apiKey = "3xIkuMC2jK8g0pHMZlNwGg==";
+                // EJ0030
+                String apiKey = "Xh8gAEbiBm2Sym3hCDFl3g==";
         
                 // 構建參數
                 Map<String, String> params = new TreeMap<>(); // 使用 TreeMap 自動按鍵名排序
@@ -162,7 +168,7 @@
                     <li>驗證碼不正確或已過期。</li>
                 <% } %>
             </ul>
-            <a href="inv_c2.jsp">返回輸入頁面</a>
+            <a href="inv_CarrierEP_c2_Var.jsp">返回輸入頁面</a>
         <% 
             } 
         %>
