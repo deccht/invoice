@@ -2,9 +2,10 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-public class SignatureGenerator {
+public class tt2 {
     public static void main(String[] args) throws Exception {
-        String apiKey = "Xh8gAEbiBm2Sym3hCDFl3g==";
+//        String apiKey = "Xh8gAEbiBm2Sym3hCDFl3g==";
+		String apiKey = "3xIkuMC2jK8g0pHMZlNwGg==";
         String dataToSign = "card_ban=96979933&card_no1=MTE0MDRCQkoxNDI1NDAwMTIxMDQxMDM1NTM3Mg==&card_no2=MTE0MDRCQkoxNDI1NDAwMTIxMDQxMDM1NTM3Mg==&card_type=RUowMTg1&token=JXRUIiLCJjYXJyaWVyX2lkMiI6Ikx5c3hRVTFTV1ZBPSIsImV4cCI6MTc0NTk4MTEzMH0eyJjYXJkX2NvZGUiOiJFSjAxODUiLCJ1c2VfYmFuIjoiOTY5Nzk5MzMiLCJzb3VyY2UiOi.ugkOzSngDbq_PzsE04DAn-RejPQ876pQ2uHGPd_sghg";
 
         // 初始化 HMAC-SHA256
