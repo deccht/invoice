@@ -65,28 +65,28 @@
                 // Step 4: 傳送參數到大平台
                 String idno = year + serial + checkCode;
                 String token = (String) session.getAttribute("token"); // 必填，從 session 中取得
-                if ( idno == null || token == null) {
+                if (idno == null || token == null) {
                     out.println("<p>token OR idno 參數缺失，無法構建 POST 資料。</p>");
                     return;
                 }
                 String cardBan = "96979933"; // 必填，會員載具申請之統一編號
-                String cardNo1 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // 必填，載具明碼 (Base64 編碼)
-                String cardNo2 = Base64.getEncoder().encodeToString(idno.getBytes("UTF-8")); // 必填，載具隱碼 (Base64 編碼)
-                String cardType = Base64.getEncoder().encodeToString("EJ0185".getBytes("UTF-8")); // 必填，載具類別編號 (Base64 編碼)
-        
+                String cardNo1Raw = idno; // 使用原始值
+                String cardNo2Raw = idno; // 使用原始值
+                String cardTypeRaw = "EJ0185"; // 使用原始值
+
+                // APIKEY (大平台提供) EJ0030
+                // String apiKey = "Xh8gAEbiBm2Sym3hCDFl3g==";
                 // APIKEY (大平台提供) EJ0185
-                //String apiKey = "3xIkuMC2jK8g0pHMZlNwGg==";
-                // EJ0030
-                String apiKey = "Xh8gAEbiBm2Sym3hCDFl3g==";
-        
-                // 構建參數
+                String apiKey = "3xIkuMC2jK8g0pHMZlNwGg==";
+
+                // 構建參數（簽名用，使用原始值）
                 Map<String, String> params = new TreeMap<>(); // 使用 TreeMap 自動按鍵名排序
                 params.put("card_ban", cardBan);
-                params.put("card_no1", cardNo1);
-                params.put("card_no2", cardNo2);
-                params.put("card_type", cardType);
+                params.put("card_no1", cardNo1Raw); // 使用原始值
+                params.put("card_no2", cardNo2Raw); // 使用原始值
+                params.put("card_type", cardTypeRaw); // 使用原始值
                 params.put("token", token);
-        
+
                 // 生成簽名 (signature)
                 String signature = "";
                 try {
@@ -98,22 +98,29 @@
                         }
                         dataToSign.append(entry.getKey()).append("=").append(entry.getValue());
                     }
-        
+
                     // 2. 使用 HMAC-SHA256 加密
                     Mac mac = Mac.getInstance("HmacSHA256");
                     SecretKeySpec secretKeySpec = new SecretKeySpec(apiKey.getBytes("UTF-8"), "HmacSHA256");
                     mac.init(secretKeySpec);
                     byte[] hmacBytes = mac.doFinal(dataToSign.toString().getBytes("UTF-8"));
-        
+
                     // 3. 將加密結果進行 Base64 編碼
                     signature = Base64.getEncoder().encodeToString(hmacBytes);
                 } catch (Exception e) {
                     out.println("<p>生成簽名時發生錯誤：" + e.getMessage() + "</p>");
                 }
-        
-                // 將簽名加入參數
-                params.put("signature", signature);
-        
+
+                // 構建 POST 資料（使用 Base64 編碼後的值）
+                String cardNo1 = Base64.getEncoder().encodeToString(cardNo1Raw.getBytes("UTF-8"));
+                String cardNo2 = Base64.getEncoder().encodeToString(cardNo2Raw.getBytes("UTF-8"));
+                String cardType = Base64.getEncoder().encodeToString(cardTypeRaw.getBytes("UTF-8"));
+
+                params.put("signature", signature); // 將簽名加入參數
+                params.put("card_no1", cardNo1); // 更新為 Base64 編碼後的值
+                params.put("card_no2", cardNo2); // 更新為 Base64 編碼後的值
+                params.put("card_type", cardType); // 更新為 Base64 編碼後的值
+
                 // 構建 POST 資料
                 StringBuilder postData = new StringBuilder();
                 for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -122,20 +129,19 @@
                     }
                     postData.append(entry.getKey()).append("=").append(entry.getValue());
                 }
-        
+
                 // 模擬回傳給大平台
-                // String postUrl = "https://www-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierFormPost"; // 正式環境 URL
                 String postUrl = "https://wwwtest-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierFormPost"; // 測試環境 URL
             %>
             <p class="success">所有輸入資料格式正確，驗證碼也正確！</p>
-        
+
             <h1>會員載具歸戶</h1>
             <p>以下是將回傳給大平台的參數：</p>
             <pre>
                 <%= postData.toString() %>
             </pre>
             <p>回傳 URL: <%= postUrl %></p>
-        
+
             <!-- 模擬自動提交表單 -->
             <form id="carrierForm" action="<%= postUrl %>" method="post">
                 <%
