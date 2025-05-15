@@ -1,6 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.Base64, java.util.TreeMap, java.util.Map, javax.crypto.Mac, javax.crypto.spec.SecretKeySpec" %>
 <%@ page import="java.util.regex.Pattern" %>
+<%@page import="org.owasp.esapi.ESAPI"%>
+<%@page import="org.owasp.esapi.Validator"%>
+
+<jsp:useBean id="db" class="tool.DBaccess" scope="request">
+	<jsp:setProperty name="db" property="jndina" value="${applicationScope.jdna}" />
+</jsp:useBean>
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -39,22 +46,21 @@
     <div class="result">
         <h1>驗證結果</h1>
         <%
-            // 取得表單輸入的資料
-            String year = request.getParameter("year");
-            String serial = request.getParameter("serial");
-            String checkCode = request.getParameter("checkCode");
-            String id = request.getParameter("id");
-            String captchaInput = request.getParameter("captcha");
+            Validator validator = ESAPI.validator();
 
-            // 從 session 中取得正確的驗證碼
+            String year = validator.getValidInput("year", request.getParameter("year"), "digits", 5, false);
+            String serial = validator.getValidInput("serial", request.getParameter("serial"), "alphanumeric", 10, false);
+            String checkCode = validator.getValidInput("checkCode", request.getParameter("checkCode"), "digits", 13, false);
+            String id = validator.getValidInput("id", request.getParameter("id"), "alphanumeric", 10, false);
+            String captchaInput = request.getParameter("captcha");
             String captchaSession = (String) session.getAttribute("captcha");
 
-            // 驗證格式的正則表達式
-            boolean isYearValid = Pattern.matches("\\d{5}", year);
-            boolean isSerialValid = Pattern.matches("[A-Za-z0-9]{10}", serial);
-            boolean isCheckCodeValid = Pattern.matches("\\d{13}", checkCode);
-            boolean isIdValid = Pattern.matches("[A-Za-z0-9]{10}", id);
+            boolean isYearValid = year != null && year.length() == 5;
+            boolean isSerialValid = serial != null && serial.length() == 10;
+            boolean isCheckCodeValid = checkCode != null && checkCode.length() == 13;
+            boolean isIdValid = id != null && id.length() == 10;
             boolean isCaptchaValid = captchaSession != null && captchaSession.equalsIgnoreCase(captchaInput);
+            Boolean checkidno = false;
 
             // 驗證結果
             if (isYearValid && isSerialValid && isCheckCodeValid && isIdValid && isCaptchaValid) {
@@ -74,86 +80,112 @@
                 String cardNo2Raw = idno; // 使用原始值
                 String cardTypeRaw = "EJ0185"; // 使用原始值
 
-                // APIKEY (大平台提供) EJ0030
-                // String apiKey = "Xh8gAEbiBm2Sym3hCDFl3g==";
-                // APIKEY (大平台提供) EJ0185
-                String apiKey = "3xIkuMC2jK8g0pHMZlNwGg==";
-
-                // 構建參數（簽名用，使用原始值）
-                Map<String, String> params = new TreeMap<>(); // 使用 TreeMap 自動按鍵名排序
-                params.put("card_ban", cardBan);
-                params.put("card_no1", cardNo1Raw); // 使用原始值
-                params.put("card_no2", cardNo2Raw); // 使用原始值
-                params.put("card_type", cardTypeRaw); // 使用原始值
-                params.put("token", token);
-
-                // 生成簽名 (signature)
-                String signature = "";
                 try {
-                    // 1. 拼接參數字串
-                    StringBuilder dataToSign = new StringBuilder();
-                    for (Map.Entry<String, String> entry : params.entrySet()) {
-                        if (dataToSign.length() > 0) {
-                            dataToSign.append("&");
+			        sql = "select * from prt_invo_v6 where carrier_id1 = ? and idno = ? and carrier_tp ='EJ0185' ";
+			        String[] params = new String[]{cardNo1Raw, id};
+			        db.openDB();
+			        db.execSQL(sql, params);
+			        if (db.rs.first()) {
+				        checkidno = true;
+			        }
+		        } catch (Exception e) {
+			        log.error("ip:" + iputils.getIp() + " DBerror:" + sql + e);
+		        } finally {
+			        db.closeDB();
+		        }
+
+                if (!checkidno) {
+			        throw new Exception(String.format(
+					"carrierNum:%s is not belong user:%s or carrier_tp is not EJ0185",
+					carrierNum, personid));
+                    %>
+                    <p class="error">身份証號或統編中查無此變動載具碼</p>
+                    <a href="inv_CarrierEP_c2_Var.jsp">返回輸入頁面</a>
+                    <%
+		        }
+
+                if (checkidno) {
+                    // APIKEY (大平台提供) EJ0030
+                    // String apiKey = "Xh8gAEbiBm2Sym3hCDFl3g==";
+                    // APIKEY (大平台提供) EJ0185
+                    String apiKey = "3xIkuMC2jK8g0pHMZlNwGg==";
+
+                    // 構建參數（簽名用，使用原始值）
+                    Map<String, String> params = new TreeMap<>(); // 使用 TreeMap 自動按鍵名排序
+                    params.put("card_ban", cardBan);
+                    params.put("card_no1", cardNo1Raw); // 使用原始值
+                    params.put("card_no2", cardNo2Raw); // 使用原始值
+                    params.put("card_type", cardTypeRaw); // 使用原始值
+                    params.put("token", token);
+
+                    // 生成簽名 (signature)
+                    String signature = "";
+                    try {
+                        // 1. 拼接參數字串
+                        StringBuilder dataToSign = new StringBuilder();
+                        for (Map.Entry<String, String> entry : params.entrySet()) {
+                            if (dataToSign.length() > 0) {
+                                dataToSign.append("&");
+                            }
+                            dataToSign.append(entry.getKey()).append("=").append(entry.getValue());
                         }
-                        dataToSign.append(entry.getKey()).append("=").append(entry.getValue());
+
+                        // 2. 使用 HMAC-SHA256 加密
+                        Mac mac = Mac.getInstance("HmacSHA256");
+                        SecretKeySpec secretKeySpec = new SecretKeySpec(apiKey.getBytes("UTF-8"), "HmacSHA256");
+                        mac.init(secretKeySpec);
+                        byte[] hmacBytes = mac.doFinal(dataToSign.toString().getBytes("UTF-8"));
+
+                        // 3. 將加密結果進行 Base64 編碼
+                        signature = Base64.getEncoder().encodeToString(hmacBytes);
+                    } catch (Exception e) {
+                        out.println("<p>生成簽名時發生錯誤：" + e.getMessage() + "</p>");
                     }
 
-                    // 2. 使用 HMAC-SHA256 加密
-                    Mac mac = Mac.getInstance("HmacSHA256");
-                    SecretKeySpec secretKeySpec = new SecretKeySpec(apiKey.getBytes("UTF-8"), "HmacSHA256");
-                    mac.init(secretKeySpec);
-                    byte[] hmacBytes = mac.doFinal(dataToSign.toString().getBytes("UTF-8"));
+                    // 構建 POST 資料（使用 Base64 編碼後的值）
+                    String cardNo1 = Base64.getEncoder().encodeToString(cardNo1Raw.getBytes("UTF-8"));
+                    String cardNo2 = Base64.getEncoder().encodeToString(cardNo2Raw.getBytes("UTF-8"));
+                    String cardType = Base64.getEncoder().encodeToString(cardTypeRaw.getBytes("UTF-8"));
 
-                    // 3. 將加密結果進行 Base64 編碼
-                    signature = Base64.getEncoder().encodeToString(hmacBytes);
-                } catch (Exception e) {
-                    out.println("<p>生成簽名時發生錯誤：" + e.getMessage() + "</p>");
-                }
+                    params.put("signature", signature); // 將簽名加入參數
+                    params.put("card_no1", cardNo1); // 更新為 Base64 編碼後的值
+                    params.put("card_no2", cardNo2); // 更新為 Base64 編碼後的值
+                    params.put("card_type", cardType); // 更新為 Base64 編碼後的值
 
-                // 構建 POST 資料（使用 Base64 編碼後的值）
-                String cardNo1 = Base64.getEncoder().encodeToString(cardNo1Raw.getBytes("UTF-8"));
-                String cardNo2 = Base64.getEncoder().encodeToString(cardNo2Raw.getBytes("UTF-8"));
-                String cardType = Base64.getEncoder().encodeToString(cardTypeRaw.getBytes("UTF-8"));
-
-                params.put("signature", signature); // 將簽名加入參數
-                params.put("card_no1", cardNo1); // 更新為 Base64 編碼後的值
-                params.put("card_no2", cardNo2); // 更新為 Base64 編碼後的值
-                params.put("card_type", cardType); // 更新為 Base64 編碼後的值
-
-                // 構建 POST 資料
-                StringBuilder postData = new StringBuilder();
-                for (Map.Entry<String, String> entry : params.entrySet()) {
-                    if (postData.length() > 0) {
-                        postData.append("&");
-                    }
-                    postData.append(entry.getKey()).append("=").append(entry.getValue());
-                }
-
-                // 模擬回傳給大平台
-                String postUrl = "https://wwwtest-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierFormPost"; // 測試環境 URL
-            %>
-            <p class="success">所有輸入資料格式正確，驗證碼也正確！</p>
-
-            <h1>會員載具歸戶</h1>
-            <p>以下是將回傳給大平台的參數：</p>
-            <pre>
-                <%= postData.toString() %>
-            </pre>
-            <p>回傳 URL: <%= postUrl %></p>
-
-            <!-- 模擬自動提交表單 -->
-            <form id="carrierForm" action="<%= postUrl %>" method="post">
-                <%
+                    // 構建 POST 資料
+                    StringBuilder postData = new StringBuilder();
                     for (Map.Entry<String, String> entry : params.entrySet()) {
-                %>
-                    <input type="hidden" name="<%= entry.getKey() %>" value="<%= entry.getValue() %>">
-                <%
+                        if (postData.length() > 0) {
+                            postData.append("&");
+                        }
+                        postData.append(entry.getKey()).append("=").append(entry.getValue());
                     }
-                %>
-                <button type="submit">確認歸戶</button>
-            </form>
-        <% 
+
+                    // 模擬回傳給大平台
+                    String postUrl = "https://wwwtest-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierFormPost"; // 測試環境 URL
+                    %>
+                    <p class="success">所有輸入資料格式正確，驗證碼也正確！</p>
+
+                    <h1>會員載具歸戶</h1>
+                    <p>以下是將回傳給大平台的參數：</p>
+                    <pre>
+                        <%= postData.toString() %>
+                    </pre>
+                    <p>回傳 URL: <%= postUrl %></p>
+
+                    <!-- 模擬自動提交表單 -->
+                    <form id="carrierForm" action="<%= postUrl %>" method="post">
+                        <%
+                        for (Map.Entry<String, String> entry : params.entrySet()) {
+                        %>
+                        <input type="hidden" name="<%= entry.getKey() %>" value="<%= entry.getValue() %>">
+                        <%
+                        }
+                        %>
+                        <button type="submit">確認歸戶</button>
+                    </form>
+        <%
+                }
             } else { 
         %>
             <p class="error">輸入資料有誤，請檢查以下項目：</p>
