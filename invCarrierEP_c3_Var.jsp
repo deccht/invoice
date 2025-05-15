@@ -89,7 +89,7 @@
 				        checkidno = true;
 			        }
 		        } catch (Exception e) {
-			        log.error("ip:" + iputils.getIp() + " DBerror:" + sql + e);
+			        out.println("<p>DB ERROR" + e.getMessage() + "</p>");
 		        } finally {
 			        db.closeDB();
 		        }
