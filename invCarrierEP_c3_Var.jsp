@@ -81,7 +81,7 @@
                 String cardTypeRaw = "EJ0185"; // 使用原始值
 
                 try {
-			        sql = "select * from prt_invo_v6 where carrier_id1 = ? and idno = ? and carrier_tp ='EJ0185' ";
+			        String sql = "select * from prt_invo_v6 where carrier_id1 = ? and idno = ? and carrier_tp ='EJ0185' ";
 			        String[] params = new String[]{cardNo1Raw, id};
 			        db.openDB();
 			        db.execSQL(sql, params);
@@ -97,7 +97,7 @@
                 if (!checkidno) {
 			        throw new Exception(String.format(
 					"carrierNum:%s is not belong user:%s or carrier_tp is not EJ0185",
-					carrierNum, personid));
+					cardNo1Raw, id ));
                     %>
                     <p class="error">身份証號或統編中查無此變動載具碼</p>
                     <a href="inv_CarrierEP_c2_Var.jsp">返回輸入頁面</a>
@@ -161,17 +161,16 @@
                         postData.append(entry.getKey()).append("=").append(entry.getValue());
                     }
 
-                    // 模擬回傳給大平台
+                    // 回傳給大平台(測試環境)
                     String postUrl = "https://wwwtest-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierFormPost"; // 測試環境 URL
                     %>
                     <p class="success">所有輸入資料格式正確，驗證碼也正確！</p>
 
                     <h1>會員載具歸戶</h1>
                     <p>以下是將回傳給大平台的參數：</p>
-                    <pre>
-                        <%= postData.toString() %>
-                    </pre>
-                    <p>回傳 URL: <%= postUrl %></p>
+                    <p>載具類別：</p><%= cardTypeRaw %>
+                    <p>載具明碼：</p><%= cardNo1Raw %>
+                    <p>載具隱碼：</p><%= cardNo2Raw %>
 
                     <!-- 模擬自動提交表單 -->
                     <form id="carrierForm" action="<%= postUrl %>" method="post">
