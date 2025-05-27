@@ -7,31 +7,31 @@
 <%@ page contentType="application/json; charset=UTF-8" %>
 
 <%
-// 1. ±µ¦¬¤j¥­¥x¶Ç¨Óªº°Ñ¼Æ
+// 1. ï¿½ï¿½ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½xï¿½Ç¨Óªï¿½ï¿½Ñ¼ï¿½
 String token = request.getParameter("token");
 String ban = request.getParameter("ban");
 
-// 1.1 token¦s¨ìSESSION, ¤§«á­n¦^¶Ç¤j¥­¥x
-session.setAttribute("token", token);
+// 1.1 tokenå­˜åˆ°SESSION, ä¹‹å¾Œè¦å›žå‚³å¤§å¹³å°
+session.setAttribute("ctoken", token);
 
-// 2. ²£¥ÍÀH¾÷ªº 16 ¦ì­^¼Æ¦r nonce
+// 2. ï¿½ï¿½ï¿½ï¿½ï¿½Hï¿½ï¿½ï¿½ï¿½ 16 ï¿½ï¿½^ï¿½Æ¦r nonce
 String nonce = generateNonce(16);
 
-// 3. «Ø¥ß JSON ª«¥ó
+// 3. ï¿½Ø¥ï¿½ JSON ï¿½ï¿½ï¿½ï¿½
 JSONObject jsonRequest = new JSONObject();
-jsonRequest.put("token", token); // ¦^¶Ç­ì¥»ªº token
+jsonRequest.put("token", token); // ï¿½^ï¿½Ç­ì¥»ï¿½ï¿½ token
 jsonRequest.put("nonce", nonce);
 
-// 4. ³]©w HTTP ¤º®eÃþ«¬¬° application/json
+// 4. ï¿½]ï¿½w HTTP ï¿½ï¿½ï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ application/json
 response.setContentType("application/json");
 response.setCharacterEncoding("UTF-8");
 
-// 5. ±N JSON ¸ê®Æ POST ¨ì«ü©wªº API ºô§}¡A¨Ã±µ¦¬¦^¶Çªº JSON ¸ê®Æ
-//Âk¤á´ú¸ÕÀô¹Ò
+// 5. ï¿½N JSON ï¿½ï¿½ï¿½ POST ï¿½ï¿½ï¿½ï¿½wï¿½ï¿½ API ï¿½ï¿½ï¿½}ï¿½Aï¿½Ã±ï¿½ï¿½ï¿½ï¿½^ï¿½Çªï¿½ JSON ï¿½ï¿½ï¿½
+//ï¿½kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 String apiUrl = "https://wwwtest-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierJsonPost";
-//Âk¤á¥¿¦¡Àô¹Ò
+//ï¿½kï¿½á¥¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //String apiUrl = "https://www-bindapi.einvoice.nat.gov.tw/btc/cloud/bind/btc101i/carrierJsonPost";
-//¦Û§Ú´ú¸ÕÀô¹Ò
+//ï¿½Û§Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //String apiUrl = "https://boss71.cht.com.tw/AMPS/carrie/inv_r1.jsp";
 URL url = new URL(apiUrl);
 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -60,7 +60,7 @@ if (responseCode == HttpURLConnection.HTTP_OK) {
         return;
     }
 
-    // 6. ±Nºô­¶¾É¦V¨ì«ü©wªº URL
+    // 6. ï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½É¦Vï¿½ï¿½ï¿½ï¿½wï¿½ï¿½ URL
     String redirectUrl = "https://inv.cht.com.tw/invoice/chtmbr/carrie_mbr.jsp";
     response.sendRedirect(redirectUrl);
 } else {
@@ -68,7 +68,7 @@ if (responseCode == HttpURLConnection.HTTP_OK) {
 }
 %>
 <%!
-// ²£¥ÍÀH¾÷­^¼Æ¦r¦r¦ê
+// ï¿½ï¿½ï¿½ï¿½ï¿½Hï¿½ï¿½ï¿½^ï¿½Æ¦rï¿½rï¿½ï¿½
 private String generateNonce(int length) {
     String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     Random rng = new Random();

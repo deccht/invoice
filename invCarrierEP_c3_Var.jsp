@@ -44,6 +44,7 @@
 </head>
 <body>
     <div class="result">
+        <img src="./images/chtLogo.png" class="img-fluid hidden-lg-up" style="max-width: 200px" alt="中華電信電子發票系統">
         <h1>驗證結果</h1>
         <%
             Validator validator = ESAPI.validator();
@@ -95,12 +96,9 @@
 		        }
 
                 if (!checkidno) {
-			        throw new Exception(String.format(
-					"carrierNum:%s is not belong user:%s or carrier_tp is not EJ0185",
-					cardNo1Raw, id ));
                     %>
-                    <p class="error">身份証號或統編中查無此變動載具碼</p>
-                    <a href="inv_CarrierEP_c2_Var.jsp">返回輸入頁面</a>
+                    <p class="error">身份證號或統一編號、載具內容有誤</p>
+                    <p class="error">請查明後由整合平台重新操作</p>
                     <%
 		        }
 
@@ -166,11 +164,10 @@
                     %>
                     <p class="success">所有輸入資料格式正確，驗證碼也正確！</p>
 
-                    <h1>會員載具歸戶</h1>
-                    <p>以下是將回傳給大平台的參數：</p>
+                    <h1>變動載具歸戶</h1>
+                    <p>以下是將回傳至整合平台之載具資訊： </p>
                     <p>載具類別：</p><%= cardTypeRaw %>
-                    <p>載具明碼：</p><%= cardNo1Raw %>
-                    <p>載具隱碼：</p><%= cardNo2Raw %>
+                    <p>載具內容：</p><%= cardNo1Raw %>
 
                     <!-- 模擬自動提交表單 -->
                     <form id="carrierForm" action="<%= postUrl %>" method="post">
@@ -205,7 +202,7 @@
                     <li>驗證碼不正確或已過期。</li>
                 <% } %>
             </ul>
-            <a href="inv_CarrierEP_c2_Var.jsp">返回輸入頁面</a>
+            <a href="javascript:history.back();">返回上頁</a>
         <% 
             } 
         %>

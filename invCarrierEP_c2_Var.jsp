@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>變動載具號碼輸入頁面</title>
+        <title>中華電信變動載具歸戶設定</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -88,14 +88,15 @@
 
     <body>
         <div class="container">
-            <h1>變動載具號碼輸入頁面</h1>
+            <img src="./images/chtLogo.png" class="img-fluid hidden-lg-up" style="max-width: 200px" alt="中華電信電子發票系統">
+            <h1>中華電信變動載具歸戶設定</h1>
             <form action="invCarrierEP_c3_Var.jsp" method="post">
                 <div class="form-group">
                     <label for="year">年期別 (5位數字)</label>
                     <input type="text" id="year" name="year" class="short" pattern="\d{5}" required>
                 </div>
                 <div class="form-group">
-                    <label for="serial">流水號 (10位英數字)</label>
+                    <label for="serial">載具流水號 (10位英數字)</label>
                     <input type="text" id="serial" name="serial" class="medium" pattern="[A-Za-z0-9]{10}" required>
                 </div>
                 <div class="form-group">
@@ -103,7 +104,7 @@
                     <input type="text" id="checkCode" name="checkCode" class="long" pattern="\d{13}" required>
                 </div>
                 <div class="form-group">
-                    <label for="id">身份字號或統一編號 (10位英數字)</label>
+                    <label for="id">身份證號或統一編號 (10位英數字)</label>
                     <input type="text" id="id" name="id" class="medium" pattern="[A-Za-z0-9]{10}" required>
                 </div>
                 <div class="captcha">
@@ -111,7 +112,7 @@
                     <input type="text" id="captcha" name="captcha" class="short" pattern="[A-Za-z0-9]{5}" required>
                     <img id="captchaImage" src="captcha_Var.jsp" alt="驗證碼" onclick="reloadCaptcha()">
                 </div>
-                <button type="submit">提交</button>
+                <button type="submit">送出</button>
             </form>
         </div>
     </body>
